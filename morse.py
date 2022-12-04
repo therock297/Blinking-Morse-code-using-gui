@@ -5,6 +5,8 @@ import RPi.GPIO as GPIO #enables us to use the cleanup method
 from gpiozero import LED #Similary this library enables use to work with LED'S
 import time #For representing time in code
 
+INPUT_SIZE = 12    #Input size limit
+
 #Defined list of nuumbers from "0 to 9" and letters from "A to Z" in morse code 
 #These are standard dot and dash set for the morse code
 CODE = {'0' : '-----',
@@ -53,7 +55,7 @@ GPIO.setup(LED, GPIO.OUT) #the pin will state in logic level high or low( output
 ## GUI Definitions
 win = Tk() #Instantiating the window that will trigger, by calling the method tk
 win.title("Morse code convertor")  #Giving the title for the window 
-myFont = FONT.Font(family = 'Helvetica', size = 14, weight = 'bold') #Creating the font using the font library and then giving some parameters
+MyFont = Font.Font(family = 'Helvetica', size = 14, weight = 'bold') #Creating the font using the font library and then giving some parameters
 
 ##Crreating a dot function
 def dot():
@@ -72,15 +74,18 @@ def dash():
 ##Creating a convert morse function that converts any sort of letter into dots and dashes
 def CONVERT_MORSE():
     input = INPUT.get()  #Getting input 
-    for letter in input: 
-        for symbol in CODE[letter.upper()]: #If letter is in upper case then, 
-            if symbol == '-': #Setting the if condition in which, 
-                dash()  #we are calling the dash function as set above.
-            elif symbol == '.': #Setting the elif condition in which, 
-                dot()   #we are calling the dot function as set above.
-            else:
-                time.sleep(2)  #Will sleep for 2 seconds if any word doesn't contain any dot and dash
-        time.sleep(2)
+    if input <= INPUT_SIZE and input > 0:
+        for letter in input: 
+            for symbol in CODE[letter.upper()]: #If letter is in upper case then, 
+                if symbol == '-': #Setting the if condition in which, 
+                    dash()  #we are calling the dash function as set above.
+                elif symbol == '.': #Setting the elif condition in which, 
+                    dot()   #we are calling the dot function as set above.
+                else:
+                    time.sleep(2)  #Will sleep for 2 seconds if any word doesn't contain any dot and dash
+            time.sleep(2)
+    else:
+        print("*** ERROR *** \n -== The input size is greater than 12 or null ==-")
 
 ##Creating a close function 
 def close():
@@ -88,7 +93,7 @@ def close():
     win.destroy()  # Will destory the window 
 
 ##Creating widgets
-INPUT = Entry(win, font = myFont, width = 24, bg='white') #Here I have created a entry spot in which a string will be entered by the user
+INPUT = Entry(win, font = MyFont, width = 24, bg='white') #Here I have created a entry spot in which a string will be entered by the user
 INPUT.grid(row=0, column=0) #So the entry spot, will on the first spot of the window
 
 #This button will load the morse code 
@@ -96,13 +101,8 @@ LEDBUTTON = Button(win, text = 'CONVERT', FONT = MyFont, command = CONVERT_MORSE
 LEDBUTTON.grid(row=1, column=0) #The LEDBUTTON is placed in the 1st row
 
 #This is the exit button which will exit out of the window
-exitBUTTON = Button(win, text = 'EXIT', FONT = MyFont, command = CLOSE, bg='grey', height=1, width=24) #Similarly given exit button some parameters
+exitBUTTON = Button(win, text = 'EXIT', FONT = MyFont, command = close, bg='grey', height=1, width=24) #Similarly given exit button some parameters
 exitBUTTON.grid(row=2, column=0) #The EXITBUTTON is placed int he 2nd row
 
 win.protocol("WM_DELETE_WINDOW", close)  #This command is used to close the window completely using the close function
 win.mainloop()  #It will be loop forever in order to keep GUI running
-
-
-             
-
-
